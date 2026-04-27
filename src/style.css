@@ -169,6 +169,16 @@ body.loaded .loader { opacity: 0; visibility: hidden; }
   font-family: var(--font-script);
   font-style: normal;
   font-weight: 400;
+  white-space: nowrap;
+}
+/* When script-display falls back to Noto Serif KR for Korean,
+   characters are wider — clamp size lower so single line fits 720px. */
+.display--script:lang(ko),
+[lang="ko"] .display--script {
+  font-size: clamp(40px, 7.4vw, 92px);
+}
+@media (max-width: 480px) {
+  .display--script { font-size: clamp(32px, 9vw, 56px); }
 }
 
 p { margin: 0 0 1em; color: var(--fg); }
@@ -235,6 +245,53 @@ p.lead { color: var(--fg-mute); font-size: 17px; line-height: 1.85; }
   color: var(--fg-faint);
   text-transform: uppercase;
 }
+/* ----- Hero photo variant ----- */
+.hero--photo {
+  color: #f4ece0;
+  position: relative;
+  overflow: hidden;
+}
+.hero--photo .hero__photo {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: grayscale(0.05) contrast(1.04) saturate(0.92);
+  z-index: 0;
+}
+.hero--photo .hero__photo-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 40%, transparent 0%, rgba(0, 0, 0, 0.45) 70%, rgba(0, 0, 0, 0.85) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.1) 30%, rgba(0, 0, 0, 0.65) 100%);
+  z-index: 1;
+}
+.hero--photo .hero__top,
+.hero--photo .hero__center,
+.hero--photo .hero__bottom {
+  position: relative;
+  z-index: 2;
+  color: inherit;
+}
+.hero--photo .hero__title { color: #fff; }
+.hero--photo .hero__date { color: rgba(255, 255, 255, 0.78); }
+.hero--photo .hero__top,
+.hero--photo .hero__bottom { color: rgba(255, 255, 255, 0.7); }
+.hero__names-ko {
+  font-family: var(--font-body);
+  font-size: 13px;
+  letter-spacing: 0.4em;
+  color: rgba(255, 255, 255, 0.78);
+  margin-top: -8px;
+}
+/* In photo variant, dim the 3D scene on the hero so the photo dominates */
+body[data-variant="photo"] #three-canvas { opacity: 0.35; }
+body[data-variant="photo"].three-ready #three-canvas { opacity: 0.35; }
+body[data-variant="photo"].scrolled #three-canvas { opacity: 0.9; }
+body[data-variant="photo"].mode-intro.scrolled #three-canvas { opacity: 0.18; }
+
 .hero__scroll::after {
   content: '';
   width: 1px; height: 36px;
@@ -603,6 +660,25 @@ p.lead { color: var(--fg-mute); font-size: 17px; line-height: 1.85; }
   color: var(--fg-faint);
   font-size: 11px;
   text-transform: uppercase;
+  display: grid;
+  gap: 24px;
+}
+.footer__variant {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  color: var(--fg-mute);
+  padding: 10px 18px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  text-transform: none;
+  transition: color 0.4s, border-color 0.4s;
+  justify-self: center;
+}
+.footer__variant:hover {
+  color: var(--accent);
+  border-color: var(--accent);
 }
 
 /* ==========================================================================

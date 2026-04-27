@@ -18,6 +18,16 @@ const fmtDate = (iso) => {
   };
 };
 
+const variantHref = () => {
+  const v = document.body.dataset.variant || 'ring';
+  return v === 'photo' ? './index.html' : './photo.html';
+};
+
+const variantLabel = () => {
+  const v = document.body.dataset.variant || 'ring';
+  return v === 'photo' ? '반지 인트로 보기 →' : '사진 인트로 보기 →';
+};
+
 const splitChars = (text) =>
   [...text]
     .map((ch) =>
@@ -40,7 +50,10 @@ export function buildSections() {
     ${locationHTML()}
     ${accountHTML()}
     ${shareHTML()}
-    <footer class="footer">${config.groom.nameEn} &amp; ${config.bride.nameEn} &middot; ${w.year}.${String(w.month).padStart(2, '0')}.${String(w.day).padStart(2, '0')}</footer>
+    <footer class="footer">
+      <div>${config.groom.nameEn} &amp; ${config.bride.nameEn} &middot; ${w.year}.${String(w.month).padStart(2, '0')}.${String(w.day).padStart(2, '0')}</div>
+      <a class="footer__variant" href="${variantHref()}" data-variant-link>${variantLabel()}</a>
+    </footer>
   `;
 
   bindAccountCopy();
@@ -50,6 +63,11 @@ export function buildSections() {
 }
 
 function heroHTML(w) {
+  const variant = document.body.dataset.variant || 'ring';
+  return variant === 'photo' ? heroPhotoHTML(w) : heroRingHTML(w);
+}
+
+function heroRingHTML(w) {
   return `
     <header class="section hero" data-section="hero">
       <div class="hero__top">
@@ -72,10 +90,36 @@ function heroHTML(w) {
   `;
 }
 
+function heroPhotoHTML(w) {
+  return `
+    <header class="section hero hero--photo" data-section="hero">
+      <div class="hero__photo" style="background-image: url('${couplePhotos.together}')"></div>
+      <div class="hero__photo-overlay"></div>
+      <div class="hero__top">
+        <span>The Wedding of</span>
+        <span>${w.year}.${String(w.month).padStart(2, '0')}.${String(w.day).padStart(2, '0')}</span>
+      </div>
+      <div class="hero__center">
+        <h1 class="hero__title">
+          <span class="reveal-text" data-text>${splitChars(config.groom.nameEn)}</span>
+          <span class="hero__amp">&amp;</span>
+          <span class="reveal-text" data-text>${splitChars(config.bride.nameEn)}</span>
+        </h1>
+        <p class="hero__date reveal">${w.year} &middot; ${String(w.month).padStart(2, '0')} &middot; ${String(w.day).padStart(2, '0')} &middot; ${w.dayEn}</p>
+        <p class="hero__names-ko reveal">${config.groom.nameKo} &nbsp;·&nbsp; ${config.bride.nameKo}</p>
+      </div>
+      <div class="hero__bottom">
+        <span class="hero__scroll">Scroll</span>
+        <span>${config.wedding.venueName.split(' ')[0]}</span>
+      </div>
+    </header>
+  `;
+}
+
 function greetingHTML() {
   return `
     <section class="section greeting" data-section="greeting">
-      <p class="eyebrow reveal">Invitation</p>
+      <p class="eyebrow reveal">Invitation &middot; 모시는 글</p>
       <p class="greeting__text reveal">
         서로의 다름을 마주하며 <em>같은 곳을 바라보기로</em> 약속한 날,<br/>
         가장 따뜻한 마음으로 두 사람의 시작을 함께해 주세요.
@@ -120,8 +164,8 @@ function gallerySectionHTML() {
     .join('');
   return `
     <section class="section gallery section--wide" data-section="gallery">
-      <p class="eyebrow reveal">Moments</p>
-      <h2 class="display reveal">our story <em>in stills</em></h2>
+      <p class="eyebrow reveal">Moments &middot; 우리의 순간들</p>
+      <h2 class="display display--script reveal">우리의 순간들</h2>
       <div class="gallery__grid reveal" style="margin-top:48px">${cells}</div>
     </section>
   `;
@@ -147,7 +191,7 @@ function calendarHTML(w) {
 
   return `
     <section class="section calendar" data-section="calendar">
-      <p class="eyebrow reveal">When</p>
+      <p class="eyebrow reveal">When &middot; 일시</p>
       <h2 class="display display--script reveal">${w.year}<br/>${w.date.toLocaleString('en-US', { month: 'long' })} ${w.day}</h2>
       <p class="lead reveal" style="margin-top:18px">${w.dayKo}요일 &middot; ${w.timeText}</p>
       <div class="calendar__grid reveal">${headers}${cells}</div>
@@ -167,7 +211,7 @@ function calendarHTML(w) {
 function locationHTML() {
   return `
     <section class="section location" data-section="location">
-      <p class="eyebrow reveal">Where</p>
+      <p class="eyebrow reveal">Where &middot; 오시는 길</p>
       <h2 class="location__name reveal">${config.wedding.venueName}</h2>
       <p class="location__address reveal">${config.wedding.venueAddress}</p>
       <div class="location__map-placeholder reveal">Map &middot; coming soon</div>
@@ -189,7 +233,7 @@ function locationHTML() {
 function accountHTML() {
   return `
     <section class="section account" data-section="account">
-      <p class="eyebrow reveal">Heart</p>
+      <p class="eyebrow reveal">Heart &middot; 마음</p>
       <h2 class="display display--script reveal">마음 전하실 곳</h2>
       <p class="lead reveal" style="margin-top:14px">참석이 어려우신 분들을 위해 안내드립니다</p>
 
@@ -225,7 +269,7 @@ function accountRow(text) {
 function shareHTML() {
   return `
     <section class="section share" data-section="share">
-      <p class="eyebrow reveal">Share</p>
+      <p class="eyebrow reveal">Share &middot; 공유</p>
       <h2 class="display display--script reveal">소식을 전하다</h2>
       <div class="share__buttons reveal">
         <button class="btn btn--primary" data-share="kakao">KakaoTalk</button>
