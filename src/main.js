@@ -1,9 +1,10 @@
 import './style.css';
 import { buildSections } from './sections.js';
 import { ThreeScene } from './threeScene.js';
-import { initScroll, initReveal } from './scroll.js';
+import { initScroll, initSectionTracker, initReveal } from './scroll.js';
 import { initTweaks } from './tweaks.js';
 import { initAudio } from './audio.js';
+import { initPagination } from './pagination.js';
 
 const main = async () => {
   buildSections();
@@ -12,6 +13,8 @@ const main = async () => {
 
   const canvas = document.getElementById('three-canvas');
   const three = new ThreeScene(canvas);
+
+  const setActiveDot = initPagination();
 
   const tweaks = initTweaks((key, value, state) => {
     if (key === 'theme') three.setTheme(value);
@@ -25,8 +28,11 @@ const main = async () => {
   applyScrollMode(initial.mode);
 
   initScroll((p) => three.setScrollProgress(p));
+  initSectionTracker(({ index, name, progress }) => {
+    three.setActiveSection(name, progress);
+    setActiveDot(index);
+  });
 
-  // Reveal once everything renders
   requestAnimationFrame(() => {
     document.body.classList.add('three-ready');
     setTimeout(() => document.body.classList.add('loaded'), 500);
@@ -34,8 +40,6 @@ const main = async () => {
 };
 
 function applyScrollMode(mode) {
-  // mode-intro: 3D fades to a soft backdrop after first viewport
-  // mode-full: 3D stays visible the whole way (no auto-fade)
   document.body.classList.toggle('mode-full', mode === 'full');
   document.body.classList.toggle('mode-intro', mode === 'intro');
 }

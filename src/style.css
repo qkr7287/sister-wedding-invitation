@@ -723,6 +723,62 @@ p.lead { color: var(--fg-mute); font-size: 17px; line-height: 1.85; }
 }
 
 /* ==========================================================================
+   Pagination dots (left edge)
+   ========================================================================== */
+.pagination {
+  position: fixed;
+  left: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  pointer-events: auto;
+}
+.pagination__dot {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: var(--fg-mute);
+}
+.pagination__pill {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--fg-faint);
+  transition: width 0.5s var(--ease-out-expo), background 0.5s var(--ease-out-expo);
+}
+.pagination__dot.is-active .pagination__pill {
+  width: 22px;
+  background: var(--accent);
+}
+.pagination__label {
+  font-family: var(--font-script);
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 0.4s var(--ease-out-expo), transform 0.4s var(--ease-out-expo);
+  pointer-events: none;
+}
+.pagination__dot:hover .pagination__label,
+.pagination__dot.is-active .pagination__label {
+  opacity: 1;
+  transform: translateX(0);
+  color: var(--accent);
+}
+@media (max-width: 720px) {
+  .pagination { display: none; }
+}
+
+/* ==========================================================================
    Audio toggle
    ========================================================================== */
 .audio-toggle {
